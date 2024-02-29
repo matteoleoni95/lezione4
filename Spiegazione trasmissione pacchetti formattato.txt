@@ -1,0 +1,33 @@
+Spiegare, con una relazione, cosa succede quando un dispositivo invia un pacchetto ad un altro dispositivo di un'altra rete.
+
+/////////////////////////////////////////////////////////////////
+
+In una comunicazione tra due dispositivi posti su reti diverse, di fondamentale importanza è la presenza di un router-gateway, 
+senza il quale la connessione tra i due host sarebbe impossibile. Bisogna ricordarsi di impostare l'indirizzo IP del router-gateway 
+nei vari host, altrimenti non saranno in grado di capire quale sia la "porta di accesso" ad un'altra rete.
+Nel momento in cui una macchina, ad esempio il laptop con IP 192.168.100.101/24, posto agli uffici del primo piano, 
+tenta di comunicare tramite un banale ping col laptop con IP 192.168.200.101/24, crea un pacchetto di dati.
+In questo pacchetto di dati sarà sempre presente il Source IP (in questo caso 192.168.100.101) e il Destination IP (192.168.200.101)(Layer3). 
+Quello che cambia è il Source MAC Address e Destination MAC Address (Layer 2), che permette il passaggio da una macchina all'altra 
+fino a giungere a destinazione, per poi tornare alla macchina che ha generato il pacchetto di dati.
+Infatti nell'header del pacchetto avremo l'indirizzo IP del PC destinatario (192.168.200.101), l'indirizzo IP del pc mittente (192.168.100.101),
+il MAC address del router (00.60.5C.E9.E8.01) e il MAC address del pc mittente (00.02.16.B9.28.D7). Una volta arrivato al router, 
+il pacchetto avrà gli stessi indirizzi IP, mentre cambierà il MAC address mittente, che in questo caso sarò dato 
+dal MAC address dell'altra rete del router (00.60.5C.E9.E8.02), e come destinazione il MAC address del PC destinatario (00.01.97.B5.38.16).
+ Una volta che il pacchetto ha raggiunto la destinazione, il pacchetto tornerà a ritroso al PC che lo ha generato. 
+
+In caso invece un client dovesse collegarsi ad un server per aprire una pagina web http ad esempio, si parla di Layer 4 e in questo caso 
+avremo bisogno di una connessione TCP (transmission control protocol). In questo caso avremo bisogno di creare un canale di comunicazione 
+prima dell'effettivo scambio di pacchetti e dati. Questo può avvenire grazie al "three way handshake", che come dice il nome si divide in 3 fasi:
+
+1) il client che inizia a connettersi col server invia inizialmente un pacchetto, col flag SYN, presente nell'header, attivato, mandando un numero seq casuale al server.
+
+2) il server riceve il pacchetto, e risponde al client mandandone un altro coi flag SYN e ACK attivi. Il valore ACK sarà uguale al valore seq precedentemente arrivato +1, 
+e il server manderà un altro valore seq per la flag SYN, chiedendo anch'essa una challenge al client.
+
+3) il client completa questo handshake, mandando un pacchetto ACK, inviando il numero seq precedentemente ricevuto dal server nel flag ACK, 
+e un altro valore ACK, pari al valore seq del flag SYN +1. 
+
+A questo punto, il server può cominciare a mandare i veri e propri pacchetti, che arriveranno sulle porte predefinite, 
+a meno che non espressamente richiesto dal client, attraverso i 2 punti (:) dopo l'indirizzo IP del server interrogato.
+
